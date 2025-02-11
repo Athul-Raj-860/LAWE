@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SignUp</title>
+     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #000000, #434343);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        h1 {
+            text-align: center;
+            color: #007bff;
+            font-size: 2.5rem;
+            margin-top: 20px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 123, 255, 0.3);
+        }
+
+        /* Update Container */
+        .update-container {
+            background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent white */
+            padding: 40px;
+            border-radius: 12px;
+            max-width: 500px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid #ddd;
+        }
+
+        .update-Form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Input Fields */
+        .update-Form input {
+            width: 100%;
+            padding: 14px;
+            margin: 12px 0;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            box-sizing: border-box;
+            background-color: #333;
+            color: white;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+
+        .update-Form input:focus, .update-Form textarea:focus {
+            border-color: #007bff;
+            background-color: #444;
+            outline: none;
+        }
+         .avatar-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #007bff;
+            color: white;
+            font-size: 30px;
+            display: inline-block;
+            text-align: center;
+            line-height: 80px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        /* Label */
+        .form-group label {
+            text-align: left;
+            font-size: 14px;
+            color: #ddd;
+            margin-bottom: 6px;
+        }
+
+        /* Button */
+        .update-Form button {
+            width: 100%;
+            padding: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .update-Form button:hover {
+            background-color: #0056b3;
+        }
+
+        .update-Form button:active {
+            background-color: #003f7f;
+        }
+
+        /* Password Strength Indicator */
+        .update-Form .form-group p {
+            text-align: left;
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 6px;
+            color: #ddd;
+        }
+
+        .update-Form #StrengthPassword {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        /* Error Message */
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: left;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .update-container {
+                width: 90%;
+                padding: 30px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+
+    </style>
+    
+</head>
+<body>
+   <div>
+        <h1>Update Account</h1>
+        <div class="Update-Container">
+            <span class="avatar-circle">{{ user.Name | slice:":1"}}</span>
+            <form class="update-Form" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" name="Name" id="name" value="{{ user.Name }}" placeholder="Enter your full name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="Email">Email Address</label>
+                    <input type="email" name="Email" id="Email" value="{{ user.Email }}" placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="Number">Phone Number</label>
+                    <input type="text" name="Number" id="Number" value="{{ user.Number }}" placeholder="Enter your phone number" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" name="Username" id="Username" value="{{ user.Username }}" placeholder="Choose a username" required>
+                </div>
+                <div class="form-group">
+                    <a href="/Forgot_Password">Change Password</a>
+                </div>
+                <button type="submit" class="btn btn primary">Update</button>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>
