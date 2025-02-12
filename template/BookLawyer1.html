@@ -84,6 +84,11 @@
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.2s ease-in-out;
         }
+        .Register-form button a {
+          color: white;
+          text-decoration: none;
+          display: block;
+        }
 
         .Register-form button:hover {
             background-color: #0056b3;
@@ -149,13 +154,13 @@
                 </div>
 
                 <div class="filter-container">
-                    <select id="Category" name="Category" onchange="this.form.submit()" required>
-                        <option value="All" selected>Select Category</option>
-                        <option value="Criminal" {% if Sort == 'Criminal' %}selected{% endif %}>Criminal</option>
-                        <option value="Cyber" {% if Sort == 'Cyber' %}selected{% endif %}>Cyber</option>
-                        <option value="Environment" {% if Sort == 'Environment' %}selected{% endif %}>Environment</option>
-                        <option value="Family" {% if Sort == 'Family' %}selected{% endif %}>Family</option>
-                        <option value="Civil" {% if Sort == 'Civil' %}selected{% endif %}>Civil</option>
+                      <select id="Category" name="Category"  class="form-select ms-2">
+                        <option value="All" selected>All</option>
+                        <option value="Criminal">Criminal</option>
+                        <option value="Cyber" >Cyber</option>
+                        <option value="Environment" >Environment</option>
+                        <option value="Family">Family</option>
+                        <option value="Civil">Civil</option>
                     </select>
                 </div>
 
@@ -178,17 +183,10 @@
                     <option value="2">2 pm to 5 pm</option>
                     <option value="3">5 pm to 9 pm</option>
                 </select>
-
-                <input type="text" id="Price" name="Price" value="{ Lawyer_Register.Price }" readonly><br>
             </div>
         </div>
-        <button type="submit" onclick="Submit()">Book Lawyer</button>
+        <button type="submit"><a href="{% url 'Payment' Book_Id %}">Book Lawyer</a></button>
     </form>
 </div>
-<script>
-     function Submit(){
-            alert("Appointment Booked!!!");
-        }
-</script>
 </body>
 </html>

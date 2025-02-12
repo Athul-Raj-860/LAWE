@@ -1,10 +1,11 @@
+from PIL.ImageShow import XVViewer
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import check_password, make_password
-from App.models import Register, User_Details, Case_Details, Lawyer_Register, Basic_Laws
-
+from App.models import Register, User_Details, Case_Details, Lawyer_Register, Basic_Laws, Book_Lawyer, Payment_Details
 
 
 def Signup(request):
+
     if request.method == "POST":
         Name = request.POST.get('Name')
         Email = request.POST.get('Email')
@@ -21,6 +22,7 @@ def Signup(request):
     return render(request,"Signup.html")
 
 def Login(request):
+
     if request.method == "POST":
         Username = request.POST.get('Username')
         Password = request.POST.get('Password')
@@ -41,6 +43,7 @@ def Login(request):
 
 
 def Forgot_Password(request):
+
     if request.method == "POST":
         Email = request.POST.get('Email')
         Password = request.POST.get('Password')
@@ -151,7 +154,7 @@ def Emergency_Numbers(request):
     if "User_Id" in request.session:
        return render(request,"EmergencyNumbers.html")
 
-def Book_Lawyer(request):
+def Book_Lawyer1(request):
     LawyersNames = Lawyer_Register.objects.values('Name')
     Category_types = Lawyer_Register.objects.values('Category').distinct()
     if "User_Id" in request.session and request.method == "POST":
@@ -167,16 +170,38 @@ def Book_Lawyer(request):
         Appointment_Date = request.POST.get('Appointment_Date')
         Appointment_Time = request.POST.get('Appointment_Time')
         Contact_Time = request.POST.get('Contact_Time')
-        Price = request.POST.get('Price')
-        # Sort According to category
-
 
         Book_Lawyer.objects.create(User_Id=User_Id, Name=Name, Number=Number, Email=Email, City=City, State=State,Lawyer_Name=Lawyer_Name,
                                    Category=Category,Appointment_Date=Appointment_Date,Appointment_Time=Appointment_Time,
-                                   Contact_Time=Contact_Time,Price=Price)
+                                   Contact_Time=Contact_Time)
         return redirect("Home")
 
-    return render(request, 'BookLawyer.html', {'LawyersNames': LawyersNames, 'Category_types': Category_types})
+
+    return render(request, 'BookLawyer1.html', {'LawyersNames': LawyersNames,
+                                                'Category_types': Category_types,})
+
+def Book_Lawyer2(request,id):
+    Lawyer = Lawyer_Register.objects.get(User_Id=id)
+    if  request.method == "POST":
+        User_Id = request.session["User_Id"]
+        Name = request.POST.get('Name')
+        Number = request.POST.get('Number')
+        Email = request.POST.get('Email')
+        City = request.POST.get('City')
+        State = request.POST.get('State')
+
+        Lawyer.Lawyer_Name = request.POST.get('Lawyer_Name')
+        Lawyer.Category = request.POST.get('Category')
+        Appointment_Date = request.POST.get('Appointment_Date')
+        Appointment_Time = request.POST.get('Appointment_Time')
+        Contact_Time = request.POST.get('Contact_Time')
+
+        Book_Lawyer.objects.create(User_Id=User_Id, Name=Name, Number=Number, Email=Email, City=City, State=State,
+                                   Appointment_Date=Appointment_Date,Appointment_Time=Appointment_Time,
+                                   Contact_Time=Contact_Time)
+        return redirect("Home")
+
+    return render(request, 'BookLawyer2.html',{'Lawyer':Lawyer})
 
 def BasicLaws(request):
     if "User_Id" in request.session:
@@ -217,4 +242,26 @@ def BasicLaws(request):
             Law = Law
 
         return render(request, "BasicLaws.html", {'Law': Law,'Sort': Sort,'Filter':Filter})
+
+def Payment(request,id):
+
+        Lawyer = Book_Lawyer.objects.get(Book_Id=id)
+        Lawyer_details = Lawyer_Register.objects.get(Name=Lawyer.Lawyer_Name)
+        if "User_Id" in request.session and request.method == "POST":
+            Lawyer.Lawyer_Name = request.POST.get('LawyerName')
+            Lawyer.Category = request.POST.get('Category')
+            Lawyer.Appointment_Date = request.POST.get('Appointment-Date')
+            Lawyer.Appointment_Time = request.POST.get('Appointment-Time')
+
+            CardName = request.POST.get('CardName')
+            CardNumber = request.POST.get('CardNumber')
+            CardExpiryMonth = request.POST.get('CardExpiryMonth')
+            CardExpiryYear = request.POST.get('CardExpiryYear')
+            Cvv = request.POST.get('CVV')
+            Lawyer_details.Price = request.POST.get('Price')
+
+            Payment_Details.objects.create(CardName=CardName,CardNumber=CardNumber,CardExpiryMonth=CardExpiryMonth,
+                                           CardExpiryYear=CardExpiryYear,Cvv=Cvv,Price=Lawyer_details.Price)
+            return redirect("Home")
+        return render(request,"AppointmentPayment.html",{'Lawyer':Lawyer,'Lawyer_details':Lawyer_details})
 # Create your views here.

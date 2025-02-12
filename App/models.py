@@ -37,6 +37,7 @@ class Case_Details(models.Model):
         db_table="Case_Details"
 
 class Lawyer_Register(models.Model):
+
     User_Id = models.AutoField(primary_key=True)
     Name = models.CharField(max_length=255)
     Email = models.EmailField()
@@ -51,6 +52,8 @@ class Lawyer_Register(models.Model):
         db_table = "Lawyer_Register"
 
 class Book_Lawyer(models.Model):
+
+    Book_Id = models.AutoField(primary_key=True)
     User_Id = models.ForeignKey(Register, on_delete=models.CASCADE)
     Name =  models.CharField(max_length=255)
     Number = models.CharField(max_length=255)
@@ -63,7 +66,7 @@ class Book_Lawyer(models.Model):
     Appointment_Date = models.DateField()
     Appointment_Time = models.CharField(max_length=25)
     Contact_Time = models.CharField(max_length=25)
-    Price = models.IntegerField()
+
 
     class Meta:
         db_table='Book Lawyer'
@@ -80,4 +83,18 @@ class Basic_Laws(models.Model):
 
     class Meta:
         db_table='Basic Laws'
+
+class Payment_Details(models.Model):
+
+    Pay_Id = models.AutoField(primary_key=True)
+    Book_Id = models.ForeignKey(Book_Lawyer, on_delete=models.CASCADE)
+    User_Id = models.ForeignKey(Register, on_delete=models.CASCADE)
+    CardName = models.CharField(max_length=100)
+    CardNumber = models.CharField(max_length=30)
+    CardExpiryMonth = models.CharField(max_length=10)
+    CardExpiryYear = models.CharField(max_length=4)
+    Price = models.ForeignKey(Lawyer_Register,on_delete=models.CASCADE)
+
+    class Meta:
+        db_table='Payment Details'
 # Create your models here.
