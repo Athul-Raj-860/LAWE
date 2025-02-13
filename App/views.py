@@ -1,4 +1,5 @@
-from PIL.ImageShow import XVViewer
+
+from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import check_password, make_password
 from App.models import Register, User_Details, Case_Details, Lawyer_Register, Basic_Laws, Book_Lawyer, Payment_Details
@@ -181,6 +182,7 @@ def Book_Lawyer1(request):
                                                 'Category_types': Category_types,})
 
 def Book_Lawyer2(request,id):
+
     Lawyer = Lawyer_Register.objects.get(User_Id=id)
     if  request.method == "POST":
         User_Id = request.session["User_Id"]
@@ -241,7 +243,12 @@ def BasicLaws(request):
         else:
             Law = Law
 
-        return render(request, "BasicLaws.html", {'Law': Law,'Sort': Sort,'Filter':Filter})
+        #Pagination
+        paginator = Paginator(Law, 4)
+        page_number = request.GET.get('page')  # Get current page from request
+        page_obj = paginator.get_page(page_number)
+
+        return render(request, "BasicLaws.html", {'Law':Law,'page_obj': page_obj,'Sort': Sort,'Filter':Filter})
 
 def Payment(request,id):
 

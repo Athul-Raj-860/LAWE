@@ -1,6 +1,7 @@
 from django.db import models
 
 class Register(models.Model):
+
     User_Id = models.AutoField(primary_key=True)
     Name = models.CharField(max_length=255)
     Email = models.EmailField()
@@ -12,6 +13,7 @@ class Register(models.Model):
         db_table = "Register"
 
 class User_Details(models.Model):
+
      Case_Id = models.AutoField(primary_key=True)
      User_Id =models.ForeignKey(Register,on_delete=models.CASCADE)
      Name = models.CharField(max_length=255)
@@ -25,6 +27,7 @@ class User_Details(models.Model):
          db_table = "User_Details"
 
 class Case_Details(models.Model):
+
     Case_Id = models.ForeignKey(User_Details,on_delete=models.CASCADE)
     User_Id = models.ForeignKey(Register, on_delete=models.CASCADE)
     Complaint_Type = models.CharField(max_length=100)
@@ -53,7 +56,7 @@ class Lawyer_Register(models.Model):
 
 class Book_Lawyer(models.Model):
 
-    Book_Id = models.AutoField(primary_key=True)
+    Book_Id = models.AutoField(primary_key=True,default=1)
     User_Id = models.ForeignKey(Register, on_delete=models.CASCADE)
     Name =  models.CharField(max_length=255)
     Number = models.CharField(max_length=255)
@@ -79,7 +82,7 @@ class Basic_Laws(models.Model):
     Law_Relevant = models.CharField(max_length=255)
     Law_Punishment = models.TextField()
     Law_Description = models.TextField()
-    Law_link = models.URLField()
+    Law_link = models.CharField(max_length=100)
 
     class Meta:
         db_table='Basic Laws'
