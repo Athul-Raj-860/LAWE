@@ -8,154 +8,90 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         /* Custom styles to make the page more attractive */
-        body {
+       body {
             font-family: 'Arial', sans-serif;
-            background-color: #121212;
-            color: #fff;
+            background-color: #121212; /* Dark Background */
+            color: #f0f0f0; /* Light text for contrast */
             line-height: 1.6;
         }
 
         /* Navbar Styles */
         .navbar {
-            background-color: #1d1d1d;
-        }
-        .navbar h1{
-            color:white;
-        }
-
-        .navbar-nav .nav-item a {
-            color: #ffffff;
-            font-weight: bold;
-        }
-
-        .navbar-nav .nav-item a:hover {
-            color: #007bff;
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #121212;
-            color: #fff;
-            line-height: 1.6;
-        }
-
-        /* Navbar Styles */
-        .navbar {
-            background-color: #343a40;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            background-color: #1d1d1d; /* Dark Navbar */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Shadow for depth */
         }
 
         .navbar h1 {
-            color: white;
-            font-size: 1.5rem;
+            color: #ffffff;
+            font-size: 2rem;
         }
 
         .navbar-nav .nav-item a {
             color: #ffffff;
             font-weight: bold;
+            padding: 10px 20px;
+            text-transform: uppercase;
         }
 
         .navbar-nav .nav-item a:hover {
-            color: #007bff;
+            color: #007bff; /* Highlight color on hover */
         }
 
 
-
-        h6 {
-            font-weight: bold;
-            margin-top: 20px;
+       /* Content Area */
+        #main {
+            padding: 30px 20px;
         }
 
-        /* heading style */
-       #main {
-            padding: 20px;
-            background-color:#343a40 ;
-        }
-
-       /* Styling for the heading section */
+        /* Align heading and search bar in the same row */
         .heading {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            justify-content: space-between; /* Space between heading and search bar */
+            align-items: center; /* Vertically center the items */
             margin-bottom: 20px;
         }
 
         .heading h1 {
-            color: white;
-            text-align: center;
-            margin-bottom: 40px;
-            background-color: #343a40;
-            padding: 20px;
-            border-radius: 10px; /* Rounded corners for a sleek look */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Slight shadow for depth */
-            font-family: 'Arial', sans-serif;
-            font-size: 2rem; /* Increased font size */
-
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0;
         }
 
         .Search-container {
             display: flex;
+            justify-content: flex-end;
             align-items: center;
+            width: 50%;
         }
 
-        #Search {
-            padding: 8px 12px;
-            font-size: 1rem;
+        .Search-container input {
+            width: 80%;
+            padding: 10px;
+            border-radius: 5px;
             border: 1px solid #ccc;
-            border-radius: 4px;
-            margin-right: 10px;
-            width: 200px;
-        }
-
-        #Search1 {
-            padding: 8px 15px;
             font-size: 1rem;
-            background-color: #17a2b8;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
         }
 
-        #Search1:hover {
-            background-color: #138496;
+        .Search-container button {
+            margin-left: 10px;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 1rem;
         }
-
-        /* Styling for the forms section */
-        form {
-            margin-bottom: 20px;
-        }
-
         .Sort, .Filter {
-            display: inline-block;
-            margin-right: 15px;
-            font-size: 1rem;
-            margin-bottom: 0;
+            margin: 15px 0;
         }
 
         .Sort label, .Filter label {
-            font-weight: 600;
-            margin-right: 10px;
-        }
-
-        .form-select {
-            padding: 8px 12px;
             font-size: 1rem;
-            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .Sort select, .Filter select {
+            width: 60%;
+            padding: 10px;
+            border-radius: 5px;
             border: 1px solid #ccc;
-            width: 200px;
-        }
-
-        .form-select:focus {
-            border-color: #17a2b8;
-            outline: none;
-        }
-
-        /* Add some space between Sort and Filter dropdown */
-        .Sort, .Filter {
-            margin-right: 20px;
         }
 
         /* Law-Cards  */
@@ -392,12 +328,13 @@
         .button1 a:hover {
             text-decoration: none;
         }
-         /* Footer Styles */
+          /* Footer Styles */
         .footer {
-            background-color: #343a40;
+            background-color: #1d1d1d;
             color: white;
             padding: 60px 20px;
             text-align: center;
+            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.5);
         }
 
         .footer h1 {
@@ -446,7 +383,9 @@
     </style>
 </head>
 <body>
-<div class="header">
+    {% csrf_token %}
+    <!-- Header -->
+    <div class="header">
         <nav class="navbar navbar-expand-sm navbar-light bg-dark">
             <div class="container-fluid">
                 <a class="navbar-brand" href="#">

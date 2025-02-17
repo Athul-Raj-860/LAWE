@@ -2,7 +2,8 @@
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import check_password, make_password
-from App.models import Register, User_Details, Case_Details, Lawyer_Register, Basic_Laws, Book_Lawyer, Payment_Details
+from App.models import Register, User_Details, Case_Details, Lawyer_Register, Basic_Laws, Book_Lawyer, Payment_Details, \
+    Emergency_Numbers
 
 
 def Signup(request):
@@ -70,32 +71,36 @@ def Home(request):
         return render(request,"Home.html",{'r':r})
 
 def Register_Case(request):
-    if "User_Id" in request.session and request.method =="POST" :
+    if "User_Id" in request.session:
         User_Id = request.session["User_Id"]
-        Name = request.POST.get('Name')
-        Number = request.POST.get('Number')
-        Email = request.POST.get('Email')
-        Address = request.POST.get('Address')
-        City = request.POST.get('City')
-        State = request.POST.get('State')
+        r = Register.objects.get(User_Id=User_Id)
+        if request.method =="POST" :
+                Name = request.POST.get('Name')
+                Number = request.POST.get('Number')
+                Email = request.POST.get('Email')
+                Address = request.POST.get('Address')
+                City = request.POST.get('City')
+                State = request.POST.get('State')
 
-        Complaint_Type = request.POST.get('Complaint_Type')
-        Complaint_Subject = request.POST.get('Complaint_Subject')
-        Complaint_Area = request.POST.get('Complaint_Area')
-        Complaint_Date = request.POST.get('Complaint_Date')
-        Complaint_Description = request.POST.get('Complaint_Description')
-        Complaint_Image = request.FILES.get('Image')
+                Complaint_Type = request.POST.get('Complaint_Type')
+                Complaint_Subject = request.POST.get('Complaint_Subject')
+                Complaint_Area = request.POST.get('Complaint_Area')
+                Complaint_Date = request.POST.get('Complaint_Date')
+                Complaint_Description = request.POST.get('Complaint_Description')
+                Complaint_Image = request.FILES.get('Image')
 
-        User_Details.objects.create(User_Id=User_Id,Name=Name,Number=Number,Email=Email,Address=Address,City=City,
-                                    State=State)
-        Case_Details.objects.create(User_Id=User_Id,Complaint_Type=Complaint_Type,Complaint_Subject=Complaint_Subject,Complaint_Area=Complaint_Area,Complaint_Date=Complaint_Date,
-                                    Complaint_Details=Complaint_Description,Complaint_Image=Complaint_Image)
-        return redirect("Home")
-    return render(request,"RegisterCase.html")
+                User_Details.objects.create(User_Id=User_Id,Name=Name,Number=Number,Email=Email,Address=Address,City=City,
+                                            State=State)
+                Case_Details.objects.create(User_Id=User_Id,Complaint_Type=Complaint_Type,Complaint_Subject=Complaint_Subject,Complaint_Area=Complaint_Area,Complaint_Date=Complaint_Date,
+                                            Complaint_Details=Complaint_Description,Complaint_Image=Complaint_Image)
+                return redirect("Home")
+        return render(request,"RegisterCase.html",{'r':r})
 
 def Lawyer_List(request):
     if "User_Id" in request.session:
         lawyer = Lawyer_Register.objects.all()
+        User_Id = request.session["User_Id"]
+        r = Register.objects.get(User_Id=User_Id)
         Sort = request.POST.get('Sort')
         Filter = request.POST.get('Filter')
         # Sort
@@ -129,7 +134,7 @@ def Lawyer_List(request):
                                                           'search': search})
         else:
             lawyer = lawyer
-        return render(request, "Lawyers.html", {'lawyer': lawyer,'Sort':Sort,'Filter':Filter })
+        return render(request, "Lawyers.html", {'lawyer': lawyer,'Sort':Sort,'Filter':Filter ,'r':r})
 
 def Update_User(request,id):
     user = Register.objects.get(User_Id=id)
@@ -138,8 +143,20 @@ def Update_User(request,id):
         user.Name = request.POST.get('Name')
         user.Email = request.POST.get('Email')
         user.Number = request.POST.get('Number')
-        user.save()
-        return redirect("Home")
+        try:
+
+            New_Password = request.POST.get('NewPassword')
+            ConfirmPassword = request.POST.get('Password1')
+            if New_Password == ConfirmPassword:
+                    hashed_password = make_password(New_Password)
+                    user.Password = hashed_password
+                    user.save()
+                    return redirect("Home")
+            else:
+                    return render(request, "Update_User.html.html", {"Error": "Password Doesnot Match"})
+        except:
+          user.save()
+          return redirect("Home")
 
 
     return render(request,"Update_User.html",{'user':user})
@@ -151,15 +168,15 @@ def Logout(request):
         del request.session["User_Id"]
     return render(request, "Login.html")
 
-def Emergency_Numbers(request):
+def EmergencyNumbers(request):
     if "User_Id" in request.session:
-       return render(request,"EmergencyNumbers.html")
+      Num = Emergency_Numbers.objects.all()
+      return render(request,"EmergencyNumbers.html",{'Num':Num })
 
 def Book_Lawyer1(request):
     LawyersNames = Lawyer_Register.objects.values('Name')
     Category_types = Lawyer_Register.objects.values('Category').distinct()
     if "User_Id" in request.session and request.method == "POST":
-        User_Id = request.session["User_Id"]
         Name = request.POST.get('Name')
         Number = request.POST.get('Number')
         Email = request.POST.get('Email')
@@ -172,10 +189,10 @@ def Book_Lawyer1(request):
         Appointment_Time = request.POST.get('Appointment_Time')
         Contact_Time = request.POST.get('Contact_Time')
 
-        Book_Lawyer.objects.create(User_Id=User_Id, Name=Name, Number=Number, Email=Email, City=City, State=State,Lawyer_Name=Lawyer_Name,
+        Book_Lawyer.objects.create( Name=Name, Number=Number, Email=Email, City=City, State=State,Lawyer_Name=Lawyer_Name,
                                    Category=Category,Appointment_Date=Appointment_Date,Appointment_Time=Appointment_Time,
                                    Contact_Time=Contact_Time)
-        return redirect("Home")
+        return redirect("Payment")
 
 
     return render(request, 'BookLawyer1.html', {'LawyersNames': LawyersNames,
@@ -184,8 +201,8 @@ def Book_Lawyer1(request):
 def Book_Lawyer2(request,id):
 
     Lawyer = Lawyer_Register.objects.get(User_Id=id)
-    if  request.method == "POST":
-        User_Id = request.session["User_Id"]
+    if "User_Id" in request.session and request.method == "POST":
+
         Name = request.POST.get('Name')
         Number = request.POST.get('Number')
         Email = request.POST.get('Email')
@@ -198,10 +215,10 @@ def Book_Lawyer2(request,id):
         Appointment_Time = request.POST.get('Appointment_Time')
         Contact_Time = request.POST.get('Contact_Time')
 
-        Book_Lawyer.objects.create(User_Id=User_Id, Name=Name, Number=Number, Email=Email, City=City, State=State,
+        Book_Lawyer.objects.create(Name=Name, Number=Number, Email=Email, City=City, State=State,
                                    Appointment_Date=Appointment_Date,Appointment_Time=Appointment_Time,
                                    Contact_Time=Contact_Time)
-        return redirect("Home")
+        return redirect("Payment")
 
     return render(request, 'BookLawyer2.html',{'Lawyer':Lawyer})
 

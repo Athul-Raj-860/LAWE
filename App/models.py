@@ -48,7 +48,7 @@ class Lawyer_Register(models.Model):
     Experience = models.DecimalField(max_digits=2,decimal_places=1)
     Firm = models.CharField(max_length=255)
     Category = models.CharField(max_length=25)
-    Image = models.ImageField()
+    Image = models.ImageField(upload_to='media/')
     Price = models.IntegerField()
 
     class Meta:
@@ -56,8 +56,7 @@ class Lawyer_Register(models.Model):
 
 class Book_Lawyer(models.Model):
 
-    Book_Id = models.AutoField(primary_key=True,default=1)
-    User_Id = models.ForeignKey(Register, on_delete=models.CASCADE)
+    Book_Id = models.AutoField(primary_key=True)
     Name =  models.CharField(max_length=255)
     Number = models.CharField(max_length=255)
     Email = models.EmailField()
@@ -100,4 +99,15 @@ class Payment_Details(models.Model):
 
     class Meta:
         db_table='Payment Details'
+
+class Emergency_Numbers(models.Model):
+
+    Num_Id = models.AutoField(primary_key=True)
+    Title = models.CharField(max_length=100)
+    Number = models.CharField(max_length=100)
+
+    class Meta:
+        db_table='Emergency Numbers'
+
+
 # Create your models here.
