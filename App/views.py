@@ -1,7 +1,9 @@
 
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import check_password, make_password
+
+
 from App.models import Register, User_Details, Case_Details, Lawyer_Register, Basic_Laws, Book_Lawyer, Payment_Details, \
     Emergency_Numbers
 
@@ -134,7 +136,17 @@ def Lawyer_List(request):
                                                           'search': search})
         else:
             lawyer = lawyer
-        return render(request, "Lawyers.html", {'lawyer': lawyer,'Sort':Sort,'Filter':Filter ,'r':r})
+
+        # Pagination
+        paginator = Paginator(lawyer, 6)
+        page_number = request.GET.get('page')
+        try:
+
+            page_obj = paginator.get_page(page_number)
+        except EmptyPage:
+            page_obj = paginator.get_page(paginator.num_pages)
+
+        return render(request, "Lawyers.html", {'page_obj': page_obj,'Sort':Sort,'Filter':Filter ,'r':r})
 
 def Update_User(request,id):
     user = Register.objects.get(User_Id=id)
@@ -174,8 +186,7 @@ def EmergencyNumbers(request):
       return render(request,"EmergencyNumbers.html",{'Num':Num })
 
 def Book_Lawyer1(request):
-    LawyersNames = Lawyer_Register.objects.values('Name')
-    Category_types = Lawyer_Register.objects.values('Category').distinct()
+    LawyersNames = Lawyer_Register.objects.values('Name','Category')
     if "User_Id" in request.session and request.method == "POST":
         Name = request.POST.get('Name')
         Number = request.POST.get('Number')
@@ -183,23 +194,30 @@ def Book_Lawyer1(request):
         City = request.POST.get('City')
         State = request.POST.get('State')
 
-        Lawyer_Name = request.POST.get('Lawyer_Name')
+        Lawyer_Name = request.POST.get('LawyerName')
         Category = request.POST.get('Category')
         Appointment_Date = request.POST.get('Appointment_Date')
         Appointment_Time = request.POST.get('Appointment_Time')
         Contact_Time = request.POST.get('Contact_Time')
 
-        Book_Lawyer.objects.create( Name=Name, Number=Number, Email=Email, City=City, State=State,Lawyer_Name=Lawyer_Name,
-                                   Category=Category,Appointment_Date=Appointment_Date,Appointment_Time=Appointment_Time,
-                                   Contact_Time=Contact_Time)
-        return redirect("Payment")
 
+        booking = Book_Lawyer.objects.create(
+            Name=Name,
+            Number=Number,
+            Email=Email,
+            City=City,
+            State=State,
+            Lawyer_Name=Lawyer_Name,
+            Category=Category,
+            Appointment_Date=Appointment_Date,
+            Appointment_Time=Appointment_Time,
+            Contact_Time=Contact_Time
+        )
+        return redirect("Payment",Book_Id=booking.Book_Id)
 
-    return render(request, 'BookLawyer1.html', {'LawyersNames': LawyersNames,
-                                                'Category_types': Category_types,})
+    return render(request, 'BookLawyer1.html', {'LawyersNames': LawyersNames})
 
 def Book_Lawyer2(request,id):
-
     Lawyer = Lawyer_Register.objects.get(User_Id=id)
     if "User_Id" in request.session and request.method == "POST":
 
@@ -224,10 +242,14 @@ def Book_Lawyer2(request,id):
 
 def BasicLaws(request):
     if "User_Id" in request.session:
-        Sort = request.POST.get('Sort')
-        Filter = request.POST.get('Filter')
+        Sort = request.POST.get('Sort','All')
+        Filter = request.POST.get('Filter','All')
+        search = request.POST.get('Search')
         Law = Basic_Laws.objects.all()
 
+        page_number = request.GET.get('page', 1)
+        if Sort != 'All' or Filter != 'All' or search:
+            page_number = 1
         #Sort
         if Sort == "Title_asc":
             Law = Law.order_by('Law_Title')
@@ -251,7 +273,7 @@ def BasicLaws(request):
             Law = Law
 
         # Search
-        search = request.POST.get('Search')
+
         if search:
             Law = Law.filter(Law_Title__icontains=search)
             if not Law.exists():
@@ -261,21 +283,23 @@ def BasicLaws(request):
             Law = Law
 
         #Pagination
-        paginator = Paginator(Law, 4)
-        page_number = request.GET.get('page')  # Get current page from request
-        page_obj = paginator.get_page(page_number)
+        paginator = Paginator(Law, 6)
 
-        return render(request, "BasicLaws.html", {'Law':Law,'page_obj': page_obj,'Sort': Sort,'Filter':Filter})
+        try:
 
-def Payment(request,id):
+            page_obj = paginator.get_page(page_number)
+        except EmptyPage:
+            page_obj = paginator.get_page(paginator.num_pages)
 
-        Lawyer = Book_Lawyer.objects.get(Book_Id=id)
+        return render(request, "BasicLaws.html", {'page_obj': page_obj,'Sort': Sort,
+                      'Filter': Filter,'search': search})
+
+
+def Payment(request,book_id):
+
+        Lawyer = Book_Lawyer.objects.get(Book_Id=book_id)
         Lawyer_details = Lawyer_Register.objects.get(Name=Lawyer.Lawyer_Name)
         if "User_Id" in request.session and request.method == "POST":
-            Lawyer.Lawyer_Name = request.POST.get('LawyerName')
-            Lawyer.Category = request.POST.get('Category')
-            Lawyer.Appointment_Date = request.POST.get('Appointment-Date')
-            Lawyer.Appointment_Time = request.POST.get('Appointment-Time')
 
             CardName = request.POST.get('CardName')
             CardNumber = request.POST.get('CardNumber')

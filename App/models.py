@@ -54,24 +54,7 @@ class Lawyer_Register(models.Model):
     class Meta:
         db_table = "Lawyer_Register"
 
-class Book_Lawyer(models.Model):
 
-    Book_Id = models.AutoField(primary_key=True)
-    Name =  models.CharField(max_length=255)
-    Number = models.CharField(max_length=255)
-    Email = models.EmailField()
-    City = models.CharField(max_length=100)
-    State = models.CharField(max_length=100)
-
-    Lawyer_Name =  models.ForeignKey(Lawyer_Register,on_delete=models.CASCADE,related_name='book_Lawyer_Name')
-    Category = models.ForeignKey(Lawyer_Register,on_delete=models.CASCADE,related_name='book_Lawyer_Categories')
-    Appointment_Date = models.DateField()
-    Appointment_Time = models.CharField(max_length=25)
-    Contact_Time = models.CharField(max_length=25)
-
-
-    class Meta:
-        db_table='Book Lawyer'
 
 class Basic_Laws(models.Model):
 
@@ -84,7 +67,26 @@ class Basic_Laws(models.Model):
     Law_link = models.CharField(max_length=100)
 
     class Meta:
-        db_table='Basic Laws'
+        db_table='Basic_Laws'
+
+
+class Book_Lawyer(models.Model):
+
+    Book_Id = models.AutoField(primary_key=True)
+    Name = models.CharField(max_length=255)
+    Number = models.CharField(max_length=255)
+    Email = models.EmailField()
+    City = models.CharField(max_length=100)
+    State = models.CharField(max_length=100)
+
+    Lawyer_Name = models.CharField(max_length=255)
+    Category = models.CharField(max_length=25)
+    Appointment_Date = models.DateField()
+    Appointment_Time = models.CharField(max_length=25)
+    Contact_Time = models.CharField(max_length=25)
+
+    class Meta:
+        db_table = 'Book_Lawyer'
 
 class Payment_Details(models.Model):
 
@@ -98,7 +100,7 @@ class Payment_Details(models.Model):
     Price = models.ForeignKey(Lawyer_Register,on_delete=models.CASCADE)
 
     class Meta:
-        db_table='Payment Details'
+        db_table='Payment_Details'
 
 class Emergency_Numbers(models.Model):
 
@@ -107,7 +109,7 @@ class Emergency_Numbers(models.Model):
     Number = models.CharField(max_length=100)
 
     class Meta:
-        db_table='Emergency Numbers'
+        db_table='Emergency_Numbers'
 
 
 # Create your models here.

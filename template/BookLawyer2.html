@@ -113,9 +113,6 @@
             cursor: pointer;
         }
 
-        .filter-container {
-            margin-bottom: 20px;
-        }
 
         .filter-container select {
             width: 100%;
@@ -155,11 +152,10 @@
             <div class="col-md-6">
                 <h2>Booking Details</h2>
                 <div class="filter-container">
-                  <input type="text" value="{{ Lawyer.Name }}">
-                </div>
-
-                <div class="filter-container">
                   <input type="text" value="{{ Lawyer.Category }}">
+                </div>
+                 <div class="filter-container">
+                  <input type="text" value="{{ Lawyer.Name }}">
                 </div>
 
                 <input type="date" id="Appointment_Date" name="Appointment_Date" placeholder="Enter Date" required><br>

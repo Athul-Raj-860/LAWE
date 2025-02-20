@@ -13,7 +13,7 @@
     <!-- Custom CSS -->
     <style>
        /* General Styles */
-   body {
+        body {
             font-family: 'Arial', sans-serif;
             background-color: #121212; /* Dark Background */
             color: #f0f0f0; /* Light text for contrast */
@@ -41,6 +41,7 @@
         .navbar-nav .nav-item a:hover {
             color: #007bff; /* Highlight color on hover */
         }
+
 
        /* Content Area */
         #main {
@@ -97,6 +98,7 @@
             border-radius: 5px;
             border: 1px solid #ccc;
         }
+
 
         /* Law Cards Section */
         .container {
@@ -184,39 +186,39 @@
         }
 
         /* Pagination */
-        .pagination-container {
-            margin-top: 30px;
-            display: flex;
-            justify-content: center;
-        }
-
         .pagination {
-            display: flex;
-            list-style-type: none;
-            padding-left: 0;
+            text-align: center;
+            margin-top: 20px;
         }
 
-        .page-item {
-            margin: 0 5px;
-        }
-
-        .page-link {
-            color: #1abc9c;
-            padding: 10px 15px;
-            font-size: 1rem;
-            border-radius: 5px;
-            background-color: #fff;
+        /* Style for the links */
+        .pagination .step-links a {
+            color: #00BFFF; /* Light blue color for links */
             text-decoration: none;
-            transition: background-color 0.3s ease;
+            padding: 5px 10px;
+            margin: 0 5px;
+            border-radius: 5px;
+            text-align: center;
         }
 
-        .page-link:hover {
-            background-color: #1abc9c;
-            color: #fff;
+        /* Hover effect for links */
+        .pagination .step-links a:hover {
+            background-color: #333; /* Darker background on hover */
+            color: white; /* Ensure text is white on hover */
         }
 
-        .page-item.disabled .page-link {
-            color: #bdc3c7;
+        /* Current page number styling */
+        .pagination .current {
+            color: yellow; /* Yellow for current page number */
+            font-weight: bold;
+        }
+
+        /* Pagination spacing */
+        .pagination .step-links {
+            display: inline-block;
+            padding: 10px;
+            background-color: #222; /* Dark background for the pagination container */
+            border-radius: 10px;
         }
 
         /* Footer Styles */
@@ -311,11 +313,11 @@
         </div>
     </nav>
 
-    <!-- Content Area -->
-    <div id="main">
+    <!-- Content Section -->
+  <div id="main">
         <div class="heading">
-            <h1 class="col-md-6">Basic Laws</h1>
-            <form method="POST" class="col-md-6">
+            <h1 class="col-md-6 d-flex align-items-center">Lawyers List</h1>
+            <form method="POST" class="col-md-6 d-flex align-items-center">
                 {% csrf_token %}
                 <div class="Search-container d-flex">
                     <input type="text" name="Search" id="Search" placeholder="Search...." required class="form-control me-2">
@@ -323,34 +325,34 @@
                 </div>
             </form>
         </div>
-
-        <form method="POST" class="d-flex mb-4">
-            {% csrf_token %}
-            <div class="Sort col-md-6">
-                <label for="Sort">&nbsp;&nbsp;Sort:</label>
-                <select id="Sort" name="Sort" onchange="this.form.submit()" class="form-select ms-2">
-                    <option value="All" selected>All</option>
-                    <option value="Title_asc" {% if Sort == "Title_asc" %}selected{% endif %}>Title(A-Z)</option>
-                    <option value="Title_desc" {% if Sort == 'Title_desc' %}selected{% endif %}>Title(Z-A)</option>
-                </select>
-            </div>
-            <div class="Filter col-md-6">
-                <label for="Filter">&nbsp;&nbsp;Filter by Category:</label>
-                <select id="Filter" name="Filter" onchange="this.form.submit()" class="form-select ms-2">
-                    <option value="All" selected>All</option>
-                    <option value="Criminal" {% if Filter == 'Criminal' %}selected{% endif %}>Criminal</option>
-                    <option value="Cyber" {% if Filter == 'Cyber' %}selected{% endif %}>Cyber</option>
-                    <option value="Environment" {% if Filter == 'Environment' %}selected{% endif %}>Environment</option>
-                    <option value="Family" {% if Filter == 'Family' %}selected{% endif %}>Family</option>
-                    <option value="Civil" {% if Filter == 'Civil' %}selected{% endif %}>Civil</option>
-                </select>
-            </div>
-        </form>
+            <form method="POST" class="d-flex">
+                {% csrf_token %}
+                <div class="Sort col-md-6  align-items-center">
+                    <label for="Sort">Sort:</label>
+                    <select id="Sort" name="Sort" onchange="this.form.submit()" class="form-select ms-2">
+                        <option value="All" selected>All</option>
+                        <option value="Name_asc" {% if Sort == "Name_asc" %}selected{% endif %}>Name(A-Z)</option>
+                        <option value="Name_desc" {% if Sort == 'Name_desc' %}selected{% endif %}>Name(Z-A)</option>
+                    </select>
+                </div>
+                <div class="Filter col-md-6  align-items-center">
+                    <label for="filter" >Filter by Category:</label>
+                    <select id="Filter" name="Filter" onchange="this.form.submit()" class="form-select ms-2">
+                        <option value="All" selected>All</option>
+                        <option value="Criminal" {% if Filter == 'Criminal' %}selected{% endif %}>Criminal</option>
+                        <option value="Cyber" {% if Filter == 'Cyber' %}selected{% endif %}>Cyber</option>
+                        <option value="Environment" {% if Filter == 'Environment' %}selected{% endif %}>Environment</option>
+                        <option value="Family" {% if Filter == 'Family' %}selected{% endif %}>Family</option>
+                        <option value="Civil" {% if Filter == 'Civil' %}selected{% endif %}>Civil</option>
+                    </select>
+                </div>
+            </form>
+        </div>
 
         <!-- Law Cards Section -->
         <div class="container">
             <div class="row">
-                {% for i in Law %}
+                {% for i in page_obj %}
                 <div class="col-md-4">
                     <div class="card">
                         <h2>{{ i.Law_Title }}</h2>
@@ -381,41 +383,27 @@
         </div>
     </div>
    <!-- Pagination Controls -->
-<div class="pagination-container">
-    <nav>
-        <ul class="pagination justify-content-center">
-            {% if page_obj.has_previous %}
-                <li class="page-item">
-                    <a class="page-link" href="?page=1" aria-label="First">
-                        <span aria-hidden="true">&laquo;&laquo;</span>
-                    </a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-            {% endif %}
+ <div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <!-- Add page=1 here to always reset to the first page when navigating -->
+            <a href="?page=1&Sort={{ Sort }}&Filter={{ Filter }}&Search={{ search }}">First</a>
+            <a href="?page={{ page_obj.previous_page_number }}&Sort={{ Sort }}&Filter={{ Filter }}&Search={{ search }}">Previous</a>
+        {% endif %}
 
-            <li class="page-item disabled">
-                <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-            </li>
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
 
-            {% if page_obj.has_next %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
-                        <span aria-hidden="true">&raquo;&raquo;</span>
-                    </a>
-                </li>
-            {% endif %}
-        </ul>
-    </nav>
+        {% if page_obj.has_next %}
+            <!-- Again, add page=1 here for consistency -->
+            <a href="?page={{ page_obj.next_page_number }}&Sort={{ Sort }}&Filter={{ Filter }}&Search={{ search }}">Next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}&Sort={{ Sort }}&Filter={{ Filter }}&Search={{ search }}">Last</a>
+        {% endif %}
+    </span>
 </div>
+
+
     <!-- Footer -->
     <div class="footer">
         <h1>LAW for Everyone</h1>
