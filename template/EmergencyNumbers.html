@@ -104,6 +104,19 @@
             margin: 0 auto;
             padding: 20px;
         }
+        .col-sm-4 a{
+            display:block;
+            width:100%;
+            padding:20px;
+            font-size:1.2em;
+            border-radius:10px;
+            text-align:center;"
+        }
+          .col-sm-4 a:hover{
+            background-color: #4CAF50;
+            color: white;
+            transform: scale(1.05);
+        }
            /* Footer Styles */
         .footer {
             background-color: #1d1d1d;
@@ -210,7 +223,8 @@
     <div class="row">
         {% for i in Num %}
             <div class="col-sm-4">
-                <button type="button">{{ i.Title }}<br>{{ i.Number }}</button><br>
+                <button type="button">{{ i.Title }}</button><br>
+                <a href="tel:{{ i.Number }}" class="btn btn-info" >{{ i.Number }}</a>
             </div>
         {% endfor %}
 

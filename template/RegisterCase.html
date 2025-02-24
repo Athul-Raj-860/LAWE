@@ -112,6 +112,7 @@
 <h1>Register Case</h1>
 <div class="Register-container">
     <form class="Register-form" method="POST">
+        {% csrf_token %}
        <div class="row">
          <div class="col-sm-6">
                <h2>Personal Details</h2>
@@ -124,7 +125,7 @@
          </div>
          <div class="col-sm-6">
               <h2>Complaint Details</h2>
-               <select id="Lawyer_Category" name="Lawyer_Category">
+               <select id="Complaint_Type" name="Complaint_Type">
                     <option value="">Select Category of Complaint</option>
                     <option value="1">Criminal</option>
                     <option value="2">Environmental</option>
@@ -139,9 +140,14 @@
                Upload the Photo Evidence if any:<br>
               <input type="file" id="Image" name="Image"><br>
          </div>
-         <button type="submit">Register</button>
+         <button type="submit" onclick="register()">Register</button>
        </div>
     </form>
 </div>
+<script>
+    function register(){
+       alert("Complaint Registered");
+    }
+</script>
 </body>
 </html>

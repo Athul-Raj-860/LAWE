@@ -74,8 +74,6 @@ def Home(request):
 
 def Register_Case(request):
     if "User_Id" in request.session:
-        User_Id = request.session["User_Id"]
-        r = Register.objects.get(User_Id=User_Id)
         if request.method =="POST" :
                 Name = request.POST.get('Name')
                 Number = request.POST.get('Number')
@@ -91,12 +89,12 @@ def Register_Case(request):
                 Complaint_Description = request.POST.get('Complaint_Description')
                 Complaint_Image = request.FILES.get('Image')
 
-                User_Details.objects.create(User_Id=User_Id,Name=Name,Number=Number,Email=Email,Address=Address,City=City,
+                User_Details.objects.create(Name=Name,Number=Number,Email=Email,Address=Address,City=City,
                                             State=State)
-                Case_Details.objects.create(User_Id=User_Id,Complaint_Type=Complaint_Type,Complaint_Subject=Complaint_Subject,Complaint_Area=Complaint_Area,Complaint_Date=Complaint_Date,
+                Case_Details.objects.create(Complaint_Type=Complaint_Type,Complaint_Subject=Complaint_Subject,Complaint_Area=Complaint_Area,Complaint_Date=Complaint_Date,
                                             Complaint_Details=Complaint_Description,Complaint_Image=Complaint_Image)
                 return redirect("Home")
-        return render(request,"RegisterCase.html",{'r':r})
+        return render(request,"RegisterCase.html")
 
 def Lawyer_List(request):
     if "User_Id" in request.session:
@@ -248,7 +246,7 @@ def BasicLaws(request):
         Law = Basic_Laws.objects.all()
 
         page_number = request.GET.get('page', 1)
-        if Sort != 'All' or Filter != 'All' or search:
+        if Sort!='All'  or Filter!='All'  or search:
             page_number = 1
         #Sort
         if Sort == "Title_asc":
@@ -259,21 +257,12 @@ def BasicLaws(request):
             Law = Law
 
         #filter
-        if Filter == 'Criminal':
-            Law = Law.filter(Law_Category = "Criminal")
-        elif Filter == 'Cyber':
-            Law = Law.filter(Law_Category = "Cyber")
-        elif Filter == 'Environment':
-            Law = Law.filter(Law_Category = "Environment")
-        elif Filter == 'Family':
-            Law = Law.filter(Law_Category = 'Family')
-        elif Filter == 'Civil':
-            Law = Law.filter(Law_Category = "Civil")
+        if Filter != 'All':
+            Law = Law.filter(Law_Category = Filter)
         else:
             Law = Law
 
         # Search
-
         if search:
             Law = Law.filter(Law_Title__icontains=search)
             if not Law.exists():
@@ -283,10 +272,9 @@ def BasicLaws(request):
             Law = Law
 
         #Pagination
-        paginator = Paginator(Law, 6)
+        paginator = Paginator(Law, 6)  # 6 items per page
 
         try:
-
             page_obj = paginator.get_page(page_number)
         except EmptyPage:
             page_obj = paginator.get_page(paginator.num_pages)

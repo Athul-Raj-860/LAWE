@@ -120,7 +120,14 @@
             justify-content: space-between;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-
+        .card h2{
+            background-color: #2c3e50; /* Same as card background */
+            color: #ecf0f1; /* Light text color */
+            padding: 10px 15px; /* Add padding for better spacing */
+            border-radius: 5px; /* Optional: Add rounded corners to the heading */
+            margin: 0; /* Remove default margin */
+            text-align: center;
+        }
         .card-body {
             flex-grow: 1;
         }
@@ -187,7 +194,8 @@
 
         /* Pagination */
         .pagination {
-            text-align: center;
+            display:flex;
+            justify-content:center;
             margin-top: 20px;
         }
 
@@ -198,7 +206,7 @@
             padding: 5px 10px;
             margin: 0 5px;
             border-radius: 5px;
-            text-align: center;
+
         }
 
         /* Hover effect for links */
@@ -355,7 +363,7 @@
                 {% for i in page_obj %}
                 <div class="col-md-4">
                     <div class="card">
-                        <h2>{{ i.Law_Title }}</h2>
+                        <h2><b>{{ i.Law_Title }}</b></h2>
                         <h3>Category: {{ i.Law_Category }}</h3>
                         <hr class="styled-line">
                         <div class="card-body">
@@ -381,7 +389,7 @@
                 {% endfor %}
             </div>
         </div>
-    </div>
+
    <!-- Pagination Controls -->
  <div class="pagination">
     <span class="step-links">
@@ -392,7 +400,7 @@
         {% endif %}
 
         <span class="current">
-            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
         </span>
 
         {% if page_obj.has_next %}
@@ -402,6 +410,7 @@
         {% endif %}
     </span>
 </div>
+
 
 
     <!-- Footer -->

@@ -1,3 +1,4 @@
+
 from django.db import models
 
 class Register(models.Model):
@@ -15,7 +16,6 @@ class Register(models.Model):
 class User_Details(models.Model):
 
      Case_Id = models.AutoField(primary_key=True)
-     User_Id =models.ForeignKey(Register,on_delete=models.CASCADE)
      Name = models.CharField(max_length=255)
      Number =  models.CharField(max_length=12)
      Email = models.EmailField()
@@ -27,10 +27,9 @@ class User_Details(models.Model):
          db_table = "User_Details"
 
 class Case_Details(models.Model):
-
-    Case_Id = models.ForeignKey(User_Details,on_delete=models.CASCADE)
-    User_Id = models.ForeignKey(Register, on_delete=models.CASCADE)
+    Case_Id = models.AutoField(primary_key=True)
     Complaint_Type = models.CharField(max_length=100)
+    Complaint_Subject = models.CharField(max_length=255)
     Complaint_Area = models.CharField(max_length=100)
     Complaint_Date = models.DateField()
     Complaint_Details = models.TextField()
@@ -41,7 +40,7 @@ class Case_Details(models.Model):
 
 class Lawyer_Register(models.Model):
 
-    User_Id = models.AutoField(primary_key=True)
+    Lawyer_Id = models.AutoField(primary_key=True)
     Name = models.CharField(max_length=255)
     Email = models.EmailField()
     Number = models.CharField(max_length=20)
